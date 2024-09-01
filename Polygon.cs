@@ -12,9 +12,32 @@ public class Polygon : Shape
         if (xCoords.Length != yCoords.Length || xCoords.Length < 3)
             throw new ArgumentException("Invalid polygon coordinates");
 
-        x = xCoords;
-        y = yCoords;
-        numPoints = x.Length;
+        int actualPoints = 0;
+        for (int i = 0; i < xCoords.Length; i++)
+        {
+            if (xCoords[i] != 0 || yCoords[i] != 0)
+            {
+                actualPoints++;
+            }
+        }
+
+        x = new double[actualPoints];
+        y = new double[actualPoints];
+
+        for (int i = 0; i < actualPoints; i++)
+        {
+            x[i] = xCoords[i];
+            y[i] = yCoords[i];
+        }
+        numPoints = actualPoints;
+
+        /* HERE FOR TESTING PURPOSES; NOW COMMENTED OUT:
+        Console.WriteLine("Polygon ID: " + id);
+        for (int i = 0; i < numPoints; i++)
+        {
+            Console.WriteLine($"Point {i + 1}: ({x[i]}, {y[i]})");
+        }
+        Console.WriteLine("Calculated Perimeter: " + calculatePolygonPerimeter());*/
     }
 
     public double calculatePolygonArea()

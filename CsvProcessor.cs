@@ -8,6 +8,7 @@ public class CsvProcessor
 
     public static List<OutputRow> ReadShapesFromCsv(string filepath)
     {
+        Console.WriteLine("Reading from input CSV file...");
         var shapesWithCalculations = new List<OutputRow>();
 
         using (var reader = new StreamReader(filepath))
@@ -78,22 +79,21 @@ public class CsvProcessor
                         break;
                     // should add all triangles to the list, along with their areas and perimeters
                     case "Polygon":
-                        double[] xCoords = new double[10];
-                        double[] yCoords = new double[10];
-                        int x = 3;
-                        int y = 5;
-                        // index
-                        int i = 0;
-                        while (values[x] != "" && i < 10 && x < 39)
+                        List<double> xCoord = new List<double>();
+                        List<double> yCoord = new List<double>();
+
+                        for (int i = 3; i < values.Length - 1; i+=4)
                         {
-                            double tempx = double.Parse(values[x]);
-                            xCoords[i] = tempx;
-                            double tempy = double.Parse(values[y]);
-                            yCoords[i] = tempy;
-                            x += 4;
-                            y += 4;
-                            i++;
+                            if (!string.IsNullOrEmpty(values[i]) && !string.IsNullOrEmpty(values[i+2]))
+                            {
+                                xCoord.Add(double.Parse(values[i]));
+                                yCoord.Add(double.Parse(values[i + 2]));
+                            }
                         }
+
+                        double[] xCoords = xCoord.ToArray();
+                        double[] yCoords = yCoord.ToArray();
+                    
                         Polygon polygon = new Polygon(id, type, xCoords, yCoords);
                         double parea = polygon.calculatePolygonArea();
                         //Console.WriteLine("Polygon area: " + parea);
@@ -110,6 +110,7 @@ public class CsvProcessor
 
     public static void WriteShapesToCsv(string filepath, List<OutputRow> outputRows)
     {
+        Console.WriteLine("Writing to new CSV file...");
         using (var writer = new StreamWriter(filepath))
         {
             foreach (var row in outputRows)
